@@ -1,241 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Project Environment Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: #f4f6f9;
-    }
+<meta charset="UTF-8">
+<title>Project Environment Dashboard</title>
 
-    header {
-      background-color: #003366;
-      color: white;
-      padding: 15px 30px;
-      font-size: 22px;
-      font-weight: 600;
-    }
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+}
 
-    .container {
-      padding: 30px;
-    }
+header {
+    background: #0b3c6f;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+}
 
-    /* BIGGER PROJECT TILES */
-    .tiles {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 25px;
-    }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 40px;
+}
 
-    .tile {
-      background: white;
-      padding: 45px 20px;
-      text-align: center;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      font-size: 20px;
-      font-weight: 700;
-      transition: transform 0.2s, background 0.2s;
-    }
+.tile {
+    background: white;
+    border-radius: 15px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
-    .tile:hover {
-      background: #0078d4;
-      color: white;
-      transform: scale(1.07);
-    }
+.tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+table {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
 
-    th {
-      background-color: #0078d4;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
+th {
+    background: #0b3c6f;
+    color: white;
+}
 
-    td {
-      padding: 10px;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
+.back-btn {
+    margin: 20px;
+    padding: 10px 20px;
+    background: #0b3c6f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
 
-    tr:hover {
-      background-color: #f2f8ff;
-    }
-
-    .back-btn {
-      margin-bottom: 15px;
-      background-color: #555;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .back-btn:hover {
-      background-color: #333;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-      color: #666;
-    }
-  </style>
+footer {
+    text-align: center;
+    padding: 15px;
+    color: #555;
+}
+</style>
 </head>
+
 <body>
 
-<header>
-  Project Environment Dashboard
-</header>
+<header>Project Environment Dashboard</header>
 
-<div class="container">
-
-  <!-- PROJECT TILE VIEW -->
-  <div id="projectView" class="tiles"></div>
-
-  <!-- ENVIRONMENT TABLE VIEW -->
-  <div id="envView" class="card" style="display:none;">
-    <button class="back-btn" onclick="showProjects()">⬅ Back to Projects</button>
-    <h3 id="projectTitle"></h3>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Environment</th>
-          <th>Package ID</th>
-          <th>Ticket ID</th>
-        </tr>
-      </thead>
-      <tbody id="envTableBody"></tbody>
-    </table>
-  </div>
-
-  <footer>
-    © 2026 Project Environment Dashboard | Demo Version
-  </footer>
-
+<!-- PROJECT TILES -->
+<div id="projectView" class="grid">
+    <div class="tile" onclick="openProject('SFP')">SFP</div>
+    <div class="tile" onclick="openProject('CFP')">CFP</div>
+    <div class="tile" onclick="openProject('SOIC')">SOIC</div>
+    <div class="tile" onclick="openProject('MAS')">MAS</div>
+    <div class="tile" onclick="openProject('Capricorn')">Capricorn</div>
+    <div class="tile" onclick="openProject('ORES')">ORES</div>
+    <div class="tile" onclick="openProject('ORPRO')">ORPRO</div>
+    <div class="tile" onclick="openProject('Suncorp')">Suncorp</div>
+    <div class="tile" onclick="openProject('Indigo')">Indigo</div>
+    <div class="tile" onclick="openProject('Saxon')">Saxon</div>
+    <div class="tile" onclick="openProject('ISMIE')">ISMIE</div>
 </div>
 
+<!-- ENV TABLE -->
+<div id="envView" style="display:none;">
+    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <h2 style="text-align:center;" id="projectTitle"></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Environment</th>
+                <th>Package ID</th>
+                <th>Ticket ID</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<footer>© 2026 Project Environment Dashboard</footer>
+
 <script>
-  const projects = {
-    "SFP": [],
-    "CFP": [],
-    "SOIC": [],
-    "MAS": [],
-    "Capricorn": [],
-    "ORES": [],
-    "ORPRO": [],
-    "Suncorp": [],
-    "Indigo": [],
-    "Saxon": [],
-    "ISMIE": []
-  };
+const projectData = {
+    "SOIC": [
+        { env: "DEV", packageId: "2026.02.23.01-DEV", ticketId: "13549" },
+        { env: "DEV", packageId: "2026.02.23.02-DEV", ticketId: "13550" },
+        { env: "UAT", packageId: "2026.02.24.01-UAT", ticketId: "13601" }
+    ],
+    "SFP": [
+        { env: "PROD", packageId: "2026.02.25.01-PROD", ticketId: "14001" }
+    ],
+    "CFP": [
+        { env: "DEV", packageId: "2026.02.20.01-DEV", ticketId: "12888" }
+    ]
+};
 
-  // Multiple rows per environment = multiple tickets per env
-  const dataTemplate = [
-    { env: "DEV01", packageId: "2026.02.23.01-DEV01", ticketId: "13501" },
-    { env: "DEV01", packageId: "2026.02.23.02-DEV01", ticketId: "13502" },
-
-    { env: "DEV02", packageId: "2026.02.23.01-DEV02", ticketId: "13503" },
-
-    { env: "DEV03", packageId: "2026.02.23.01-DEV03", ticketId: "13504" },
-
-    { env: "DEV04", packageId: "2026.02.23.01-DEV04", ticketId: "13505" },
-
-    { env: "UAT",   packageId: "2026.02.23.01-UAT",   ticketId: "13506" },
-    { env: "UAT",   packageId: "2026.02.23.02-UAT",   ticketId: "13507" },
-
-    { env: "PERF",  packageId: "2026.02.23.01-PERF",  ticketId: "13508" },
-
-    { env: "DEBUG", packageId: "2026.02.23.01-DEBUG", ticketId: "13509" },
-
-    { env: "PROD",  packageId: "2026.02.23.01-PROD",  ticketId: "13510" },
-    { env: "PROD",  packageId: "2026.02.23.02-PROD",  ticketId: "13511" }
-  ];
-
-  // Copy same pattern to all projects
-  Object.keys(projects).forEach(project => {
-    projects[project] = JSON.parse(JSON.stringify(dataTemplate));
-  });
-
-  function loadProjects() {
-    const projectView = document.getElementById("projectView");
-    projectView.innerHTML = "";
-
-    Object.keys(projects).forEach(project => {
-      const div = document.createElement("div");
-      div.className = "tile";
-      div.innerText = project;
-      div.onclick = () => showEnvironments(project);
-      projectView.appendChild(div);
-    });
-  }
-
-  function showEnvironments(project) {
+function openProject(projectName) {
     document.getElementById("projectView").style.display = "none";
     document.getElementById("envView").style.display = "block";
-    document.getElementById("projectTitle").innerText = "Project : " + project;
+    document.getElementById("projectTitle").innerText = projectName;
 
-    const tableBody = document.getElementById("envTableBody");
-    tableBody.innerHTML = "";
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
 
-    projects[project].forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.env}</td>
-        <td>${row.packageId}</td>
-        <td>${row.ticketId}</td>
-      `;
-      tableBody.appendChild(tr);
+    const rows = projectData[projectName] || [];
+
+    rows.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.env}</td>
+            <td>${row.packageId}</td>
+            <td>${row.ticketId}</td>
+        `;
+        tbody.appendChild(tr);
     });
-  }
+}
 
-  function showProjects() {
+function goBack() {
     document.getElementById("envView").style.display = "none";
     document.getElementById("projectView").style.display = "grid";
-  }
-
-  loadProjects();
-</script>
-
-</body>
-</html>Projects();
-</script>
-
-</body>
-</html>onst tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.env}</td>
-        <td>${row.packageId}</td>
-        <td>${row.ticketId}</td>
-      `;
-      tableBody.appendChild(tr);
-    });
-  }
-
-  function showProjects() {
-    document.getElementById("envView").style.display = "none";
-    document.getElementById("projectView").style.display = "grid";
-  }
-
-  loadProjects();
+}
 </script>
 
 </body>
