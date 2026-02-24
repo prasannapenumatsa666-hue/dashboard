@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project Environment Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px gray;
+    }
+
+    .filters {
+      margin-bottom: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input, select, button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #e6e6e6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Project Environment Dashboard</h2>
+
+    <div class="filters">
+      <input type="text" id="projectInput" placeholder="Project Name (SOIC, SFP, CFP)">
+      
+      <select id="envSelect">
+        <option value="">All Environments</option>
+        <option value="DEV">DEV</option>
+        <option value="UAT">UAT</option>
+        <option value="PERF">PERF</option>
+        <option value="PROD">PROD</option>
+      </select>
+
+      <button onclick="filterData()">Search</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Environment</th>
+          <th>Package ID</th>
+          <th>Ticket ID</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+<script>
+  const data = [
+    { project: "SOIC", environment: "DEV",  packageId: "2026.02.23.01-Dev",  ticketId: "14458" },
+    { project: "SFP",  environment: "UAT",  packageId: "2026.02.23.02-UAT",  ticketId: "23456" },
+    { project: "CFP",  environment: "PROD", packageId: "2026.02.23.03-Prod", ticketId: "34567" },
+    { project: "Capricorn", environment: "PERF", packageId: "2026.02.23.04-Perf", ticketId: "45678" },
+    { project: "MAS", environment: "DEV",  packageId: "2026.02.23.05-Dev", ticketId: "56789" }
+  ];
+
+  function loadTable(filteredData) {
+    const table = document.getElementById("tableBody");
+    table.innerHTML = "";
+
+    filteredData.forEach(row => {
+      table.innerHTML += `
+        <tr>
+          <td>${row.project}</td>
+          <td>${row.environment}</td>
+          <td>${row.packageId}</td>
+          <td>${row.ticketId}</td>
+        </tr>
+      `;
+    });
+  }
+
+  function filterData() {
+    const project = document.getElementById("projectInput").value.toLowerCase();
+    const env = document.getElementById("envSelect").value;
+
+    let filtered = data;
+
+    if (project) {
+      filtered = filtered.filter(d => d.project.toLowerCase().includes(project));
+    }
+
+    if (env) {
+      filtered = filtered.filter(d => d.environment === env);
+    }
+
+    loadTable(filtered);
+  }
+
+  // Load initial table
+  loadTable(data);
+</script>
+
+</body>
+</html>
