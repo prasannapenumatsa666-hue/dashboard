@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Environment Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+header {
+    background: #0b3c6f;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 40px;
+}
+
+.tile {
+    background: white;
+    border-radius: 15px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+table {
+    width: 95%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #0b3c6f;
+    color: white;
+}
+
+.back-btn {
+    margin: 20px;
+    padding: 10px 20px;
+    background: #0b3c6f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    color: #555;
+}
+
+select {
+    padding: 6px;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Project Environment Dashboard</header>
+
+<!-- PROJECT TILES -->
+<div id="projectView" class="grid">
+    <div class="tile" onclick="openProject('SFP')">SFP</div>
+    <div class="tile" onclick="openProject('CFP')">CFP</div>
+    <div class="tile" onclick="openProject('SOIC')">SOIC</div>
+    <div class="tile" onclick="openProject('MAS')">MAS</div>
+    <div class="tile" onclick="openProject('Capricorn')">Capricorn</div>
+    <div class="tile" onclick="openProject('ORES')">ORES</div>
+    <div class="tile" onclick="openProject('ORPRO')">ORPRO</div>
+    <div class="tile" onclick="openProject('Suncorp')">Suncorp</div>
+    <div class="tile" onclick="openProject('Indigo')">Indigo</div>
+    <div class="tile" onclick="openProject('Saxon')">Saxon</div>
+    <div class="tile" onclick="openProject('ISMIE')">ISMIE</div>
+</div>
+
+<!-- ENV VIEW -->
+<div id="envView" style="display:none;">
+    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <h2 style="text-align:center;" id="projectTitle"></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Environment</th>
+                <th>Package ID</th>
+                <th>Tickets</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<footer>© 2026 Project Environment Dashboard</footer>
+
+<script>
+const environments = ["Dev01","Dev02","Dev03","Dev04","UAT","Perf","Debug","Prod"];
+
+const projectData = {
+  "SOIC": {
+    "Dev01": [{ packageId:"2026.02.01-DEV", tickets:["13549","13550"] }],
+    "Dev02": [{ packageId:"2026.02.02-DEV", tickets:["13560"] }],
+    "UAT": [{ packageId:"2026.02.10-UAT", tickets:["13601","13602"] }],
+    "Prod": [{ packageId:"2026.02.20-PROD", tickets:["14001"] }]
+  },
+  "SFP": {
+    "Dev01": [{ packageId:"2026.03.01-DEV", tickets:["21001"] }],
+    "UAT": [{ packageId:"2026.03.05-UAT", tickets:["21005","21006"] }],
+    "Prod": [{ packageId:"2026.03.10-PROD", tickets:["21020"] }]
+  },
+  "CFP": {
+    "Dev01": [{ packageId:"2026.01.01-DEV", tickets:["31001"] }],
+    "Perf": [{ packageId:"2026.01.08-PERF", tickets:["31010","31011"] }],
+    "Prod": [{ packageId:"2026.01.15-PROD", tickets:["31020"] }]
+  },
+  "MAS": {},
+  "Capricorn": {},
+  "ORES": {},
+  "ORPRO": {},
+  "Suncorp": {},
+  "Indigo": {},
+  "Saxon": {},
+  "ISMIE": {}
+};
+
+function openProject(projectName) {
+    document.getElementById("projectView").style.display = "none";
+    document.getElementById("envView").style.display = "block";
+    document.getElementById("projectTitle").innerText = projectName;
+
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    environments.forEach(env => {
+        const packages = projectData[projectName][env] || [];
+
+        if (packages.length === 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${env}</td>
+                <td>-</td>
+                <td>-</td>
+            `;
+            tbody.appendChild(tr);
+        } else {
+            packages.forEach(pkg => {
+                let ticketOptions = pkg.tickets.map(t => `<option>${t}</option>`).join("");
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${env}</td>
+                    <td>${pkg.packageId}</td>
+                    <td>
+                        <select>
+                            ${ticketOptions}
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    });
+}
+
+function goBack() {
+    document.getElementById("envView").style.display = "none";
+    document.getElementById("projectView").style.display = "grid";
+}
+</script>
+
+</body>
+</html>
