@@ -1,60 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Project Environment Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f4f6f9;
     }
 
-    h2 {
-      text-align: center;
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px 30px;
+      font-size: 22px;
+      font-weight: 600;
     }
 
     .container {
-      width: 80%;
-      margin: auto;
+      padding: 30px;
+    }
+
+    .card {
       background: white;
       padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px gray;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .filters {
-      margin-bottom: 15px;
       display: flex;
-      gap: 10px;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
-    input, select, button {
-      padding: 8px;
+    .filters input,
+    .filters select {
+      padding: 8px 12px;
       font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    .filters button {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .filters button:hover {
+      background-color: #005fa3;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
+      margin-top: 10px;
     }
 
     th {
-      background-color: #e6e6e6;
+      background-color: #0078d4;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f2f8ff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Project Environment Dashboard</h2>
+<header>
+  Project Environment Dashboard
+</header>
+
+<div class="container">
+  <div class="card">
 
     <div class="filters">
-      <input type="text" id="projectInput" placeholder="Project Name (SOIC, SFP, CFP)">
+      <input type="text" id="projectInput" placeholder="Enter Project Name (SOIC, SFP, CFP)">
       
       <select id="envSelect">
         <option value="">All Environments</option>
@@ -70,7 +117,7 @@
     <table>
       <thead>
         <tr>
-          <th>Project</th>
+          <th>Project Name</th>
           <th>Environment</th>
           <th>Package ID</th>
           <th>Ticket ID</th>
@@ -78,7 +125,13 @@
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
+
   </div>
+
+  <footer>
+    © 2026 Project Environment Dashboard | Demo Version
+  </footer>
+</div>
 
 <script>
   const data = [
@@ -86,22 +139,23 @@
     { project: "SFP",  environment: "UAT",  packageId: "2026.02.23.02-UAT",  ticketId: "23456" },
     { project: "CFP",  environment: "PROD", packageId: "2026.02.23.03-Prod", ticketId: "34567" },
     { project: "Capricorn", environment: "PERF", packageId: "2026.02.23.04-Perf", ticketId: "45678" },
-    { project: "MAS", environment: "DEV",  packageId: "2026.02.23.05-Dev", ticketId: "56789" }
+    { project: "MAS", environment: "DEV",  packageId: "2026.02.23.05-Dev", ticketId: "56789" },
+    { project: "Suncorp", environment: "UAT", packageId: "2026.02.23.06-UAT", ticketId: "67890" }
   ];
 
-  function loadTable(filteredData) {
+  function loadTable(rows) {
     const table = document.getElementById("tableBody");
     table.innerHTML = "";
 
-    filteredData.forEach(row => {
-      table.innerHTML += `
-        <tr>
-          <td>${row.project}</td>
-          <td>${row.environment}</td>
-          <td>${row.packageId}</td>
-          <td>${row.ticketId}</td>
-        </tr>
+    rows.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.project}</td>
+        <td>${row.environment}</td>
+        <td>${row.packageId}</td>
+        <td>${row.ticketId}</td>
       `;
+      table.appendChild(tr);
     });
   }
 
@@ -122,7 +176,6 @@
     loadTable(filtered);
   }
 
-  // Load initial table
   loadTable(data);
 </script>
 
