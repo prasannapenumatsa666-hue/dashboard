@@ -22,6 +22,32 @@
       padding: 30px;
     }
 
+    /* PROJECT TILES */
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .tile {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 18px;
+      font-weight: 600;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .tile:hover {
+      background: #0078d4;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    /* TABLE VIEW */
     .card {
       background: white;
       padding: 20px;
@@ -29,40 +55,10 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .filters {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filters input,
-    .filters select {
-      padding: 8px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 200px;
-    }
-
-    .filters button {
-      background-color: #0078d4;
-      color: white;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .filters button:hover {
-      background-color: #005fa3;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     th {
@@ -70,7 +66,6 @@
       color: white;
       padding: 10px;
       text-align: center;
-      font-weight: 600;
     }
 
     td {
@@ -81,6 +76,20 @@
 
     tr:hover {
       background-color: #f2f8ff;
+    }
+
+    .back-btn {
+      margin-bottom: 15px;
+      background-color: #555;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background-color: #333;
     }
 
     footer {
@@ -98,85 +107,95 @@
 </header>
 
 <div class="container">
-  <div class="card">
 
-    <div class="filters">
-      <input type="text" id="projectInput" placeholder="Enter Project Name (SOIC, SFP, CFP)">
-      
-      <select id="envSelect">
-        <option value="">All Environments</option>
-        <option value="DEV">DEV</option>
-        <option value="UAT">UAT</option>
-        <option value="PERF">PERF</option>
-        <option value="PROD">PROD</option>
-      </select>
+  <!-- PROJECT TILE VIEW -->
+  <div id="projectView" class="tiles"></div>
 
-      <button onclick="filterData()">Search</button>
-    </div>
+  <!-- ENVIRONMENT TABLE VIEW -->
+  <div id="envView" class="card" style="display:none;">
+    <button class="back-btn" onclick="showProjects()">⬅ Back to Projects</button>
+    <h3 id="projectTitle"></h3>
 
     <table>
       <thead>
         <tr>
-          <th>Project Name</th>
           <th>Environment</th>
           <th>Package ID</th>
           <th>Ticket ID</th>
         </tr>
       </thead>
-      <tbody id="tableBody"></tbody>
+      <tbody id="envTableBody"></tbody>
     </table>
-
   </div>
 
   <footer>
     © 2026 Project Environment Dashboard | Demo Version
   </footer>
+
 </div>
 
 <script>
-  const data = [
-    { project: "SOIC", environment: "DEV",  packageId: "2026.02.23.01-Dev",  ticketId: "14458" },
-    { project: "SFP",  environment: "UAT",  packageId: "2026.02.23.02-UAT",  ticketId: "23456" },
-    { project: "CFP",  environment: "PROD", packageId: "2026.02.23.03-Prod", ticketId: "34567" },
-    { project: "Capricorn", environment: "PERF", packageId: "2026.02.23.04-Perf", ticketId: "45678" },
-    { project: "MAS", environment: "DEV",  packageId: "2026.02.23.05-Dev", ticketId: "56789" },
-    { project: "Suncorp", environment: "UAT", packageId: "2026.02.23.06-UAT", ticketId: "67890" }
-  ];
+  const data = {
+    "SOIC": [
+      { env: "DEV01", packageId: "2026.02.23.01-Dev01", ticketId: "13501" },
+      { env: "DEV02", packageId: "2026.02.23.02-Dev02", ticketId: "13502" },
+      { env: "DEV03", packageId: "2026.02.23.03-Dev03", ticketId: "13503" },
+      { env: "DEV04", packageId: "2026.02.23.04-Dev04", ticketId: "13504" },
+      { env: "UAT",   packageId: "2026.02.23.05-UAT",   ticketId: "13505" },
+      { env: "PERF",  packageId: "2026.02.23.06-Perf",  ticketId: "13506" },
+      { env: "DEBUG", packageId: "2026.02.23.07-Debug", ticketId: "13507" },
+      { env: "PROD",  packageId: "2026.02.23.08-Prod",  ticketId: "13508" }
+    ],
+    "SFP": [
+      { env: "DEV",  packageId: "2026.02.24.01-Dev",  ticketId: "14501" },
+      { env: "UAT",  packageId: "2026.02.24.02-UAT",  ticketId: "14502" },
+      { env: "PROD", packageId: "2026.02.24.03-Prod", ticketId: "14503" }
+    ],
+    "CFP": [
+      { env: "DEV",  packageId: "2026.02.25.01-Dev",  ticketId: "15501" },
+      { env: "UAT",  packageId: "2026.02.25.02-UAT",  ticketId: "15502" },
+      { env: "PROD", packageId: "2026.02.25.03-Prod", ticketId: "15503" }
+    ]
+  };
 
-  function loadTable(rows) {
-    const table = document.getElementById("tableBody");
-    table.innerHTML = "";
+  function loadProjects() {
+    const projectView = document.getElementById("projectView");
+    projectView.innerHTML = "";
 
-    rows.forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.project}</td>
-        <td>${row.environment}</td>
-        <td>${row.packageId}</td>
-        <td>${row.ticketId}</td>
-      `;
-      table.appendChild(tr);
+    Object.keys(data).forEach(project => {
+      const div = document.createElement("div");
+      div.className = "tile";
+      div.innerText = project;
+      div.onclick = () => showEnvironments(project);
+      projectView.appendChild(div);
     });
   }
 
-  function filterData() {
-    const project = document.getElementById("projectInput").value.toLowerCase();
-    const env = document.getElementById("envSelect").value;
+  function showEnvironments(project) {
+    document.getElementById("projectView").style.display = "none";
+    document.getElementById("envView").style.display = "block";
+    document.getElementById("projectTitle").innerText = "Project : " + project;
 
-    let filtered = data;
+    const tableBody = document.getElementById("envTableBody");
+    tableBody.innerHTML = "";
 
-    if (project) {
-      filtered = filtered.filter(d => d.project.toLowerCase().includes(project));
-    }
-
-    if (env) {
-      filtered = filtered.filter(d => d.environment === env);
-    }
-
-    loadTable(filtered);
+    data[project].forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.env}</td>
+        <td>${row.packageId}</td>
+        <td>${row.ticketId}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
   }
 
-  loadTable(data);
+  function showProjects() {
+    document.getElementById("envView").style.display = "none";
+    document.getElementById("projectView").style.display = "grid";
+  }
+
+  loadProjects();
 </script>
 
 </body>
