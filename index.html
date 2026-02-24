@@ -46,7 +46,7 @@ header {
 }
 
 table {
-    width: 90%;
+    width: 95%;
     margin: 30px auto;
     border-collapse: collapse;
     background: white;
@@ -79,6 +79,11 @@ footer {
     padding: 15px;
     color: #555;
 }
+
+select {
+    padding: 6px;
+    border-radius: 5px;
+}
 </style>
 </head>
 
@@ -101,7 +106,7 @@ footer {
     <div class="tile" onclick="openProject('ISMIE')">ISMIE</div>
 </div>
 
-<!-- ENV TABLE -->
+<!-- ENV VIEW -->
 <div id="envView" style="display:none;">
     <button class="back-btn" onclick="goBack()">⬅ Back</button>
     <h2 style="text-align:center;" id="projectTitle"></h2>
@@ -111,7 +116,7 @@ footer {
             <tr>
                 <th>Environment</th>
                 <th>Package ID</th>
-                <th>Ticket ID</th>
+                <th>Tickets</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -121,18 +126,33 @@ footer {
 <footer>© 2026 Project Environment Dashboard</footer>
 
 <script>
+const environments = ["Dev01","Dev02","Dev03","Dev04","UAT","Perf","Debug","Prod"];
+
 const projectData = {
-    "SOIC": [
-        { env: "DEV", packageId: "2026.02.23.01-DEV", ticketId: "13549" },
-        { env: "DEV", packageId: "2026.02.23.02-DEV", ticketId: "13550" },
-        { env: "UAT", packageId: "2026.02.24.01-UAT", ticketId: "13601" }
-    ],
-    "SFP": [
-        { env: "PROD", packageId: "2026.02.25.01-PROD", ticketId: "14001" }
-    ],
-    "CFP": [
-        { env: "DEV", packageId: "2026.02.20.01-DEV", ticketId: "12888" }
-    ]
+  "SOIC": {
+    "Dev01": [{ packageId:"2026.02.01-DEV", tickets:["13549","13550"] }],
+    "Dev02": [{ packageId:"2026.02.02-DEV", tickets:["13560"] }],
+    "UAT": [{ packageId:"2026.02.10-UAT", tickets:["13601","13602"] }],
+    "Prod": [{ packageId:"2026.02.20-PROD", tickets:["14001"] }]
+  },
+  "SFP": {
+    "Dev01": [{ packageId:"2026.03.01-DEV", tickets:["21001"] }],
+    "UAT": [{ packageId:"2026.03.05-UAT", tickets:["21005","21006"] }],
+    "Prod": [{ packageId:"2026.03.10-PROD", tickets:["21020"] }]
+  },
+  "CFP": {
+    "Dev01": [{ packageId:"2026.01.01-DEV", tickets:["31001"] }],
+    "Perf": [{ packageId:"2026.01.08-PERF", tickets:["31010","31011"] }],
+    "Prod": [{ packageId:"2026.01.15-PROD", tickets:["31020"] }]
+  },
+  "MAS": {},
+  "Capricorn": {},
+  "ORES": {},
+  "ORPRO": {},
+  "Suncorp": {},
+  "Indigo": {},
+  "Saxon": {},
+  "ISMIE": {}
 };
 
 function openProject(projectName) {
@@ -143,16 +163,33 @@ function openProject(projectName) {
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = "";
 
-    const rows = projectData[projectName] || [];
+    environments.forEach(env => {
+        const packages = projectData[projectName][env] || [];
 
-    rows.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${row.env}</td>
-            <td>${row.packageId}</td>
-            <td>${row.ticketId}</td>
-        `;
-        tbody.appendChild(tr);
+        if (packages.length === 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${env}</td>
+                <td>-</td>
+                <td>-</td>
+            `;
+            tbody.appendChild(tr);
+        } else {
+            packages.forEach(pkg => {
+                let ticketOptions = pkg.tickets.map(t => `<option>${t}</option>`).join("");
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${env}</td>
+                    <td>${pkg.packageId}</td>
+                    <td>
+                        <select>
+                            ${ticketOptions}
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
     });
 }
 
